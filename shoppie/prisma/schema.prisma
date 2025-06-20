@@ -48,6 +48,8 @@ model CartItem {
   quantity   Int      @default(0)
   userId     String
   productId  String
+  totalCost  Float    @default(0.0)
+
   user       User     @relation(fields: [userId], references: [id])
   product    Product  @relation(fields: [productId], references: [id])
 }
@@ -82,6 +84,19 @@ enum Category {
   SPORTS
   OTHER
   VEHICLES
+  STATIONERY
+  PET
+  GARDENING
+  FURNITURE
+  KITCHEN
+  BABY
+  GAMES
+  HEALTH 
+  TRAVEL
+  MUSIC
+  ART
+  FOOD
+  HAIR_DRESSING
 }
 
 enum ProductSize {

@@ -1,10 +1,15 @@
 /* eslint-disable prettier/prettier */
-import { Injectable, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  BadRequestException,
+  NotFoundException,
+} from '@nestjs/common';
 import { CartItem } from 'generated/prisma';
 import { AddToCartDto } from 'src/dto/add.cart.dto';
 import { UsersService } from 'src/users/users.service';
 import { ProductsService } from '../products/products.service';
 import { getPrismaClient } from '../prisma/prisma.service'; // your existing file
+import { UpdateCartQuantityDto } from 'src/dto/update.cart.dto';
 
 @Injectable()
 export class CartService {
@@ -15,41 +20,59 @@ export class CartService {
     private readonly productsService: ProductsService,
   ) {}
 
-  // add to cart 
+  // add to cart
   async addToCart(userId: string, dto: AddToCartDto): Promise<CartItem[]> {
     const product = await this.productsService.getProductById(dto.productId);
     if (!product || product.quantity < dto.quantity) {
-      throw new BadRequestException('Product not found or quantity is not available');
+      throw new BadRequestException(
+        'Product not found or quantity is insufficient',
+      );
     }
-    
-    // decrease product quantity
+
+    // Calculate total cost for the quantity being added
+    const totalCost = product.price * dto.quantity;
+
+    // Decrease product quantity
     await this.productsService.decrementStock(dto.productId, dto.quantity);
 
-    // check if item already exists in cart
+    // Check if item already exists in cart
     const existingItem = await this.prisma.cartItem.findFirst({
       where: {
-        userId, productId: dto.productId,
+        userId,
+        productId: dto.productId,
       },
     });
+
     if (existingItem) {
-      // update existing item quantity
+      const updatedQuantity = existingItem.quantity + dto.quantity;
+      const updatedTotalCost = product.price * updatedQuantity;
+
+      // Update existing item quantity and totalCost
       await this.prisma.cartItem.update({
         where: { id: existingItem.id },
-        data: { quantity: existingItem.quantity + dto.quantity },
+        data: {
+          quantity: updatedQuantity,
+          totalCost: updatedTotalCost,
+        },
       });
-      // return updated item
-      const updated = await this.prisma.cartItem.findUnique({ where: { id: existingItem.id } });
+
+      // Return updated item
+      const updated = await this.prisma.cartItem.findUnique({
+        where: { id: existingItem.id },
+      });
       return updated ? [updated] : [];
     }
 
-    // create new cart item if not exists
+    // Create new cart item if it doesn't exist
     const newItem = await this.prisma.cartItem.create({
       data: {
         userId,
         productId: dto.productId,
         quantity: dto.quantity,
+        totalCost,
       },
     });
+
     return [newItem];
   }
 
@@ -59,7 +82,9 @@ export class CartService {
       where: { id: cartItemId },
     });
     if (!item || item.userId !== userId) {
-      throw new BadRequestException('Item not found or does not belong to user');
+      throw new BadRequestException(
+        'Item not found or does not belong to user',
+      );
     }
     await this.productsService.incrementStock(item.productId, item.quantity);
     await this.prisma.cartItem.delete({ where: { id: cartItemId } });
@@ -75,7 +100,7 @@ export class CartService {
     });
   }
 
-  // checkout user cart
+  // checkout user cart (place order)
   async checkout(userId: string): Promise<{ message: string }> {
     const cartItems = await this.getCart(userId);
     if (!cartItems.length) {
@@ -89,5 +114,43 @@ export class CartService {
     return {
       message: 'Checkout successful',
     };
+  }
+
+  // reduce cart item quantity
+  async reduceCartItemQuantity(
+    userId: string,
+    dto: UpdateCartQuantityDto,
+  ): Promise<CartItem> {
+    const existingItem = await this.prisma.cartItem.findFirst({
+      where: { userId, productId: dto.productId },
+      include: { product: true }, // for product.price
+    });
+
+    if (!existingItem) {
+      throw new NotFoundException('Cart item not found');
+    }
+
+    if (dto.reduceBy >= existingItem.quantity) {
+      throw new BadRequestException(
+        `You can only reduce up to ${existingItem.quantity - 1} item(s)`,
+      );
+    }
+
+    const updatedQuantity = existingItem.quantity - dto.reduceBy;
+    const updatedTotalCost = existingItem.product.price * updatedQuantity;
+
+    // Update the cart item
+    const updatedItem = await this.prisma.cartItem.update({
+      where: { id: existingItem.id },
+      data: {
+        quantity: updatedQuantity,
+        totalCost: updatedTotalCost,
+      },
+    });
+
+    // Increase product stock since user "returned" some quantity
+    await this.productsService.incrementStock(dto.productId, dto.reduceBy);
+
+    return updatedItem;
   }
 }

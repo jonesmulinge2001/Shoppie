@@ -4,16 +4,26 @@ Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NWRiZmFkZi02NGE5LTRjOTAtOGQ4Mi03MTNjN2NkZDM3MTQiLCJlbWFpbCI6ImpvbmF0aGFubXdhbmRpNkBnbWFpbC5jb20iLCJyb2xlIjoiQ1VTVE9NRVIiLCJpYXQiOjE3NTAzOTAzMzgsImV4cCI6MTc1MDQ3NjczOH0.Q67Neh_URohLrm19MATdn4gRtKvRDtbD1NVxoyTYUck
 
 {
-  "productId": "a4c502d2-9c47-49f7-abff-a592bdb46e4c",
-  "quantity": 4
+  "productId": "c38177d9-e17e-44e3-b771-fff2d6c24c8a",
+  "quantity": 5
 }
 
-### delete from the cart
-DELETE http://localhost:3000/cart/b0a0b64c-185f-4a0c-85bc-9ba5d8351c50
+### delete item from the cart
+DELETE http://localhost:3000/cart/c72a2532-39e1-4567-a00c-0928cf994e38
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5MmJhNGVhNS1hMjM5LTQ5ZDktODA0YS05MmExMWYyNmUzOTciLCJlbWFpbCI6ImpvbmF0aGFubXVsaW5nZW13YW5kaS5jb20iLCJyb2xlIjoiQ1VTVE9NRVIiLCJpYXQiOjE3NTAzNzUwNTUsImV4cCI6MTc1MDQ2MTQ1NX0.lXR8ut7utQNX9cun_v5SraNjQvP75uEf8Uz7EaYOXq4
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NWRiZmFkZi02NGE5LTRjOTAtOGQ4Mi03MTNjN2NkZDM3MTQiLCJlbWFpbCI6ImpvbmF0aGFubXdhbmRpNkBnbWFpbC5jb20iLCJyb2xlIjoiQ1VTVE9NRVIiLCJpYXQiOjE3NTAzOTAzMzgsImV4cCI6MTc1MDQ3NjczOH0.Q67Neh_URohLrm19MATdn4gRtKvRDtbD1NVxoyTYUck
 
 ### checkout cart
 POST http://localhost:3000/cart/checkout
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5MmJhNGVhNS1hMjM5LTQ5ZDktODA0YS05MmExMWYyNmUzOTciLCJlbWFpbCI6ImpvbmF0aGFubXVsaW5nZW13YW5kaS5jb20iLCJyb2xlIjoiQ1VTVE9NRVIiLCJpYXQiOjE3NTAzNzUwNTUsImV4cCI6MTc1MDQ2MTQ1NX0.lXR8ut7utQNX9cun_v5SraNjQvP75uEf8Uz7EaYOXq4
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NWRiZmFkZi02NGE5LTRjOTAtOGQ4Mi03MTNjN2NkZDM3MTQiLCJlbWFpbCI6ImpvbmF0aGFubXdhbmRpNkBnbWFpbC5jb20iLCJyb2xlIjoiQ1VTVE9NRVIiLCJpYXQiOjE3NTAzOTAzMzgsImV4cCI6MTc1MDQ3NjczOH0.Q67Neh_URohLrm19MATdn4gRtKvRDtbD1NVxoyTYUck
+
+### reduce items in the cart for specific product
+PATCH http://localhost:3000/cart/reduce
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NWRiZmFkZi02NGE5LTRjOTAtOGQ4Mi03MTNjN2NkZDM3MTQiLCJlbWFpbCI6ImpvbmF0aGFubXdhbmRpNkBnbWFpbC5jb20iLCJyb2xlIjoiQ1VTVE9NRVIiLCJpYXQiOjE3NTAzOTAzMzgsImV4cCI6MTc1MDQ3NjczOH0.Q67Neh_URohLrm19MATdn4gRtKvRDtbD1NVxoyTYUck
+
+{
+  "productId": "f513d10d-1fd5-4dcd-9304-2a1235712af4",
+  "reduceBy": 2
+}

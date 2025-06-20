@@ -1,4 +1,7 @@
 /* eslint-disable prettier/prettier */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+import { UpdateCartQuantityDto } from './../dto/update.cart.dto';
+/* eslint-disable prettier/prettier */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable prettier/prettier */
@@ -9,8 +12,10 @@ import {
   HttpCode,
   HttpStatus,
   Param,
+  Patch,
   Post,
   Req,
+  Request,
   UseGuards,
 } from '@nestjs/common';
 import { CartService } from './cart.service';
@@ -36,7 +41,7 @@ export class CartController {
   @RequirePermissions(Permission.ADD_TO_CART)
   async addToCart(
     @Req() req: RequestWithUser,
-    @Body() dto: AddToCartDto
+    @Body() dto: AddToCartDto,
   ): Promise<ApiResponse<CartItem[]>> {
     try {
       const userId = req.user.id;
@@ -63,7 +68,7 @@ export class CartController {
   @RequirePermissions(Permission.REMOVE_FROM_CART)
   async removeFromCart(
     @Req() req: RequestWithUser,
-    @Param('cartItemId') cartItemId: string
+    @Param('cartItemId') cartItemId: string,
   ): Promise<ApiResponse<null>> {
     try {
       const userId = req.user.id;
@@ -82,6 +87,36 @@ export class CartController {
   }
 
   /**
+   * @Patch('reduce') Reduce quantity of item in cart
+   * @ return ApiResponse
+   */
+  @Patch('reduce')
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(AuthGuard('jwt'), PermissionGuard)
+  @RequirePermissions(Permission.VIEW_CART)
+  async reduceQuantity(
+    @Request() req,
+    @Body() dto: UpdateCartQuantityDto,
+  ): Promise<ApiResponse<CartItem>> {
+    try {
+      const updated = await this.cartService.reduceCartItemQuantity(
+        req.user.id,
+        dto,
+      );
+      return {
+        success: true,
+        message: 'Quantity reduced successfully',
+        data: updated,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: error.message,
+      };
+    }
+  }
+
+  /**
    * Checkout the cart
    */
   @Post('checkout')
@@ -89,7 +124,7 @@ export class CartController {
   @UseGuards(AuthGuard('jwt'), PermissionGuard)
   @RequirePermissions(Permission.CHECKOUT)
   async checkout(
-    @Req() req: RequestWithUser
+    @Req() req: RequestWithUser,
   ): Promise<ApiResponse<{ message: string }>> {
     try {
       const userId = req.user.id;
