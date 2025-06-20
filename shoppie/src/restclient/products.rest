@@ -1,0 +1,44 @@
+### add a product
+POST http://localhost:3000/products
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjNzFkMGQ4ZS02MjQ1LTRjOWYtOGE3Ni1hNGEyODljZjBiYjciLCJlbWFpbCI6ImpvbmF0aGFubXVsaW5nZW13YW5kaUBnbWFpbC5jb20iLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NTAzNzI5NTEsImV4cCI6MTc1MDQ1OTM1MX0.tJafL96M2JS7qDTbd1rQYQSXFU71QoQGq_NNDvS_HQA
+
+{
+  "name": "Oraimo Charger",
+  "description": "Fast charger and data transfer cable",
+  "price": 600,
+  "category": "BOOKS",
+  "quantity": 10,
+  "status": "AVAILABLE",
+   "image": "https://example.com/images/chips-masala.jpg" 
+}
+
+### get all products
+GET http://localhost:3000/products
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjNzFkMGQ4ZS02MjQ1LTRjOWYtOGE3Ni1hNGEyODljZjBiYjciLCJlbWFpbCI6ImpvbmF0aGFubXVsaW5nZW13YW5kaUBnbWFpbC5jb20iLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NTAzNzI5NTEsImV4cCI6MTc1MDQ1OTM1MX0.tJafL96M2JS7qDTbd1rQYQSXFU71QoQGq_NNDvS_HQA
+
+### get a product by id
+GET http://localhost:3000/products/9bf8fc54-b783-41d3-9612-45a956a993eb
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjNzFkMGQ4ZS02MjQ1LTRjOWYtOGE3Ni1hNGEyODljZjBiYjciLCJlbWFpbCI6ImpvbmF0aGFubXVsaW5nZW13YW5kaUBnbWFpbC5jb20iLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NTAzNzI5NTEsImV4cCI6MTc1MDQ1OTM1MX0.tJafL96M2JS7qDTbd1rQYQSXFU71QoQGq_NNDvS_HQA
+
+### get a product by name
+GET http://localhost:3000/products/name/Sald
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjNzFkMGQ4ZS02MjQ1LTRjOWYtOGE3Ni1hNGEyODljZjBiYjciLCJlbWFpbCI6ImpvbmF0aGFubXVsaW5nZW13YW5kaUBnbWFpbC5jb20iLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NTAzNzI5NTEsImV4cCI6MTc1MDQ1OTM1MX0.tJafL96M2JS7qDTbd1rQYQSXFU71QoQGq_NNDvS_HQA
+
+### update a product
+PATCH http://localhost:3000/products/abc123
+Content-Type: application/json
+Authorization: Bearer 
+
+{
+  "price": 170,
+  "status": "OUT_OF_STOCK"
+}
+
+### delete product by id
+DELETE http://localhost:3000/products/9bf8fc54-b783-41d3-9612-45a956a993eb
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjNzFkMGQ4ZS02MjQ1LTRjOWYtOGE3Ni1hNGEyODljZjBiYjciLCJlbWFpbCI6ImpvbmF0aGFubXVsaW5nZW13YW5kaUBnbWFpbC5jb20iLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NTAzNzI5NTEsImV4cCI6MTc1MDQ1OTM1MX0.tJafL96M2JS7qDTbd1rQYQSXFU71QoQGq_NNDvS_HQA
+
+### filter/ search products
+GET http://localhost:3000/products/search?ELECTRONICS
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjNzFkMGQ4ZS02MjQ1LTRjOWYtOGE3Ni1hNGEyODljZjBiYjciLCJlbWFpbCI6ImpvbmF0aGFubXVsaW5nZW13YW5kaUBnbWFpbC5jb20iLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NTAzNzI5NTEsImV4cCI6MTc1MDQ1OTM1MX0.tJafL96M2JS7qDTbd1rQYQSXFU71QoQGq_NNDvS_HQA

@@ -1,0 +1,108 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         String     @id @default(uuid())
+  name       String
+  email      String     @unique
+  password   String
+  role       Role       @default(CUSTOMER)
+  status     UserStatus @default(ACTIVE)
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @default(now())
+
+  cartItems  CartItem[]
+}
+
+model Product {
+  id          String         @id @default(uuid())
+  name        String
+  description String
+  price       Float
+  image       String
+  quantity    Int            @default(1)
+  category    Category       @default(OTHER)
+  status      ProductStatus  @default(AVAILABLE)
+  size        ProductSize?   
+  color       ProductColor?  
+  createdAt   DateTime       @default(now())
+
+  cartItems   CartItem[]
+}
+
+model CartItem {
+  id         String   @id @default(uuid())
+  quantity   Int      @default(0)
+  userId     String
+  productId  String
+  user       User     @relation(fields: [userId], references: [id])
+  product    Product  @relation(fields: [productId], references: [id])
+}
+
+enum Role {
+  ADMIN
+  CUSTOMER
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+  BANNED
+  PENDING
+}
+
+enum ProductStatus {
+  AVAILABLE
+  OUT_OF_STOCK
+  DISCONTINUED
+  COMING_SOON
+}
+
+enum Category {
+  ELECTRONICS
+  FASHION
+  BOOKS
+  GROCERIES
+  TOYS
+  HOME
+  BEAUTY
+  SPORTS
+  OTHER
+  VEHICLES
+}
+
+enum ProductSize {
+  XS
+  S
+  M
+  L
+  XL
+  XXL
+}
+
+enum ProductColor {
+  RED
+  BLUE
+  GREEN
+  BLACK
+  WHITE
+  GRAY
+  YELLOW
+  PINK
+  ORANGE
+  PURPLE
+  BROWN
+}
